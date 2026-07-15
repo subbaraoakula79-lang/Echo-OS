@@ -1,0 +1,12 @@
+{
+  "name": "echo-os-companion",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "react": "18.2.0",
+    "react-native": "0.72.6",
+    "@react-native-firebase/app": "^18.0.0",
+    "@react-native-firebase/messaging": "^18.0.0"
+  },
+  "description": "ECHO OS Android Companion App"
+}

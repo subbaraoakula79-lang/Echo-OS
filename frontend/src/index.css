@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-transparent text-white font-sans overflow-hidden antialiased;
+    backdrop-filter: blur(10px);
+    margin: 0;
+  }
+  #root {
+    @apply h-screen w-screen flex flex-col;
+  }
+}
