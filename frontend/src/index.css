@@ -2,13 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  body {
-    @apply bg-transparent text-white font-sans overflow-hidden antialiased;
-    backdrop-filter: blur(10px);
-    margin: 0;
-  }
-  #root {
-    @apply h-screen w-screen flex flex-col;
-  }
+:root {
+  font-family: 'Space Mono', monospace, system-ui, -apple-system, sans-serif;
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #0a0e15;
+  color: #ffffff;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* Custom ECHO Scrollbar */
+.echo-scrollbar::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.echo-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.echo-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 94, 0, 0.3);
+  border-radius: 2px;
+}
+
+.echo-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 94, 0, 0.6);
+}
+
+/* Glow effects */
+.text-shadow-glow {
+  text-shadow: 0 0 8px rgba(255, 94, 0, 0.6);
 }

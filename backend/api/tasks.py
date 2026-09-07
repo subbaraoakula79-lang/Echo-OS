@@ -13,3 +13,4 @@ async def get_tasks(db: AsyncSession = Depends(get_db)):
 @router.post("/")
 async def create_task(task: TaskCreate, db: AsyncSession = Depends(get_db)):
     return {"status": "success", "task": task.model_dump()}
+    

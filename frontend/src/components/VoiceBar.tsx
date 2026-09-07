@@ -1,3 +1,8 @@
+/**
+ * ECHO OS — Voice Waveform Bar
+ * Animated audio waveform that responds to voice input.
+ */
+
 import { useRef, useEffect } from 'react';
 
 interface VoiceBarProps {
@@ -12,7 +17,7 @@ export default function VoiceBar({ isActive }: VoiceBarProps) {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d')!;
-    let t = 0;
+    let time = 0;
 
     const resize = () => {
       const dpr = window.devicePixelRatio || 1;
@@ -24,50 +29,55 @@ export default function VoiceBar({ isActive }: VoiceBarProps) {
     window.addEventListener('resize', resize);
 
     const draw = () => {
-      t += 0.03;
+      time += 0.02;
       const w = canvas.offsetWidth;
       const h = canvas.offsetHeight;
-      const cy = h / 2;
+      const mid = h / 2;
 
       ctx.clearRect(0, 0, w, h);
 
-      const bars = 60;
-      const barW = w / bars;
+      const segments = 120;
+      const segW = w / segments;
 
-      for (let i = 0; i < bars; i++) {
-        const x = i * barW;
-        const norm = i / bars;
-        const center = Math.abs(norm - 0.5) * 2; // 0 at center, 1 at edges
+      for (let i = 0; i < segments; i++) {
+        const x = i * segW;
+        const nx = i / segments;
 
-        let amplitude: number;
+        let amplitude;
         if (isActive) {
-          amplitude = (1 - center * 0.6) * (
-            Math.sin(t * 4 + i * 0.3) * 0.4 +
-            Math.sin(t * 7 + i * 0.15) * 0.3 +
-            Math.sin(t * 2 + i * 0.5) * 0.3 +
-            0.3
-          );
+          amplitude = (
+            Math.sin(time * 4 + nx * 8) * 0.4 +
+            Math.sin(time * 7 + nx * 12) * 0.2 +
+            Math.sin(time * 11 + nx * 20) * 0.15 +
+            Math.random() * 0.05
+          ) * h * 0.35;
         } else {
-          amplitude = (1 - center * 0.8) * (Math.sin(t + i * 0.2) * 0.1 + 0.15);
+          amplitude = (
+            Math.sin(time * 1.5 + nx * 6) * 0.08 +
+            Math.sin(time * 0.7 + nx * 3) * 0.05
+          ) * h * 0.3;
         }
 
-        const barH = Math.max(2, amplitude * h * 0.8);
+        const barH = Math.abs(amplitude);
+        const alpha = isActive ? 0.6 + Math.abs(amplitude / (h * 0.35)) * 0.4 : 0.15;
 
-        // Gradient per bar
-        const grad = ctx.createLinearGradient(x, cy - barH / 2, x, cy + barH / 2);
-        if (isActive) {
-          grad.addColorStop(0, 'rgba(255, 0, 128, 0.8)');
-          grad.addColorStop(0.5, 'rgba(0, 153, 255, 0.9)');
-          grad.addColorStop(1, 'rgba(255, 0, 128, 0.8)');
-        } else {
-          grad.addColorStop(0, 'rgba(0, 153, 255, 0.2)');
-          grad.addColorStop(0.5, 'rgba(0, 153, 255, 0.3)');
-          grad.addColorStop(1, 'rgba(0, 153, 255, 0.2)');
-        }
+        // Orange/gold gradient for bars
+        const grad = ctx.createLinearGradient(x, mid - barH, x, mid + barH);
+        grad.addColorStop(0, `rgba(255, 94, 0, ${alpha})`);
+        grad.addColorStop(0.5, `rgba(255, 165, 0, ${alpha * 0.8})`);
+        grad.addColorStop(1, `rgba(255, 94, 0, ${alpha * 0.3})`);
 
         ctx.fillStyle = grad;
-        ctx.fillRect(x + 1, cy - barH / 2, barW - 2, barH);
+        ctx.fillRect(x, mid - barH, segW - 1, barH * 2);
       }
+
+      // Center line
+      ctx.strokeStyle = `rgba(255, 94, 0, ${isActive ? 0.3 : 0.08})`;
+      ctx.lineWidth = 0.5;
+      ctx.beginPath();
+      ctx.moveTo(0, mid);
+      ctx.lineTo(w, mid);
+      ctx.stroke();
 
       animRef.current = requestAnimationFrame(draw);
     };
@@ -79,10 +89,5 @@ export default function VoiceBar({ isActive }: VoiceBarProps) {
     };
   }, [isActive]);
 
-  return (
-    <canvas
-      ref={canvasRef}
-      style={{ width: '100%', height: '100%', display: 'block' }}
-    />
-  );
+  return <canvas ref={canvasRef} style={{ width: '100%', height: '100%', display: 'block' }} />;
 }
